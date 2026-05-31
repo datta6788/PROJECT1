@@ -276,6 +276,6 @@ Through this project I gained practical experience in:
 ### Outputs
 
 <img width="1894" height="978" alt="Screenshot 2026-05-31 195220" src="https://github.com/user-attachments/assets/3270af48-e34e-470e-9ec2-775975e8a746" />
----
+
 <img width="1900" height="981" alt="Screenshot 2026-05-31 195253" src="https://github.com/user-attachments/assets/c490a23b-8937-413d-8ffb-d7a837502e58" />
 
