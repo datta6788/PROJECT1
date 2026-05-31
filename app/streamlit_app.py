@@ -4,6 +4,12 @@ import joblib
 import requests
 from scipy.sparse import load_npz
 from rapidfuzz import process 
+st.markdown("""
+<style>           
+img{border-radius: 12px;transition: transform 0.3s ease;}
+img:hover{transform: scale(1.05);}
+</style>
+""", unsafe_allow_html=True)
 
 knn_model = joblib.load(r"D:\PRJ1\PROJECT1\models\knn_model.pkl")
 sparse_matrix = load_npz(r"D:\PRJ1\PROJECT1\models\sparse_matrix.npz")
@@ -65,6 +71,11 @@ def ani_data(ani_name):
         return{"poster":poster,"score":score,"episodes":episodes,"genre":genre}
     except:
         return None
+def get_poster(anime_name):
+    data=ani_data(anime_name)
+    if data is not None:
+        return data["poster"]
+    return None
 
 ani_list=list(ani_to_index.keys())
 st.title("Anime RECOMMENDATION SYSTEM")
@@ -72,46 +83,49 @@ ani_input = st.text_input("Enter anime name")
 top_n = st.selectbox("No.of recommendations",[5, 10, 25, 50, 100])
 if st.button("Recommend"):
     matched_ani=fuzzy(ani_input,ani_list)
-    result = hybrid(matched_ani,top_n)
-    if result is None:
+    hero_banner=ani_data(matched_ani)
+    if hero_banner:
+        column1,column2=st.columns([1,3])
+        with column1:
+            st.image(hero_banner["poster"],width=250)
+        with column2:
+            st.title(matched_ani.title())
+            st.write(f"⭐ {hero_banner['score']}")
+            st.write(f"🎬 {hero_banner['episodes']} Episodes")
+            st.write(f"🎭 {hero_banner['genre']}")
+        st.divider()
+    # result = hybrid(matched_ani,top_n)
+    content_result=content_based_recc(matched_ani,top_n)
+    knn_result=knn_recc(matched_ani,top_n)
+    hybrid_result=hybrid(matched_ani,top_n)
+    if content_result is None or knn_result is None or hybrid_result is None:
         st.error("Anime not found!")
     else:
-        st.success(f"Showing results for: {matched_ani}")
-        for _, row in result.iterrows():
+        #row1
+        st.subheader(f"Anime similar to {ani_input}")
+        cols=st.columns(5)
+        for col,(_,row) in zip(cols,content_result.head(5).iterrows()):
+            with col:
+                poster=get_poster(row["Name"])
+                if poster:
+                    st.image(poster)
+                st.caption(row["Name"].upper())
+        #row2
+        st.subheader(f"People also like")
+        cols=st.columns(5)
+        for col,(_,row) in zip(cols,knn_result.head(5).iterrows()):
+            with col:
+                poster=get_poster(row["Name"])
+                if poster:
+                    st.image(poster)
+                st.caption(row["Name"].upper())
+        #row3
+        st.subheader("Top picks")
+        cols=st.columns(5)
+        for col,(_,row) in zip(cols,hybrid_result.head(5).iterrows()):
+            with col:
+                poster=get_poster(row["Name"])
+                if poster:
+                    st.image(poster)
+                st.caption(row["Name"].upper())
 
-            data = ani_data(
-                row["Name"]
-            )
-
-            col1, col2 = st.columns([1, 3])
-
-            with col1:
-
-                if data is not None:
-
-                    st.image(
-                        data["poster"],
-                        width=150
-                    )
-
-            with col2:
-
-                st.subheader(
-                    row["Name"]
-                )
-
-                if data is not None:
-
-                    st.write(
-                        f"⭐ Rating: {data['score']}"
-                    )
-
-                    st.write(
-                        f"🎬 Episodes: {data['episodes']}"
-                    )
-
-                    st.write(
-                        f"🎭 Genre: {data['genre']}"
-                    )
-
-            st.markdown("---")
