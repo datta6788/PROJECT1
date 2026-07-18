@@ -1,5 +1,4 @@
-# Anime Recommendation System
-
+# YANIMAY
 A machine learning-powered Anime Recommendation System that combines Content-Based Filtering and Collaborative Filtering into a Hybrid Recommendation Engine. The system recommends anime based on similarities in content, user preferences, and a weighted hybrid approach. Built using Python, Scikit-Learn, Streamlit, and the Jikan API.
 
 ---
