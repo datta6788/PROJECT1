@@ -11,13 +11,18 @@ img:hover{transform: scale(1.05);}
 </style>
 """, unsafe_allow_html=True)
 
-knn_model = joblib.load(r"D:\PRJ1\PROJECT1\models\knn_model.pkl")
-sparse_matrix = load_npz(r"D:\PRJ1\PROJECT1\models\sparse_matrix.npz")
-ani_to_index = joblib.load(r"D:\PRJ1\PROJECT1\models\ani_to_index.pkl")
-index_to_ani = joblib.load(r"D:\PRJ1\PROJECT1\models\index_to_ani.pkl")
-ind=joblib.load(r"D:\PRJ1\PROJECT1\models\ind.pkl")
-top_sim=joblib.load(r"D:\PRJ1\PROJECT1\models\top_sim.pkl")
-content_anime_index=joblib.load(r"D:\PRJ1\PROJECT1\models\content_anime_index.pkl")
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+MODEL_DIR = BASE_DIR / "models"
+
+knn_model = joblib.load(MODEL_DIR / "knn_model.pkl")
+sparse_matrix = load_npz(MODEL_DIR / "sparse_matrix.npz")
+ani_to_index = joblib.load(MODEL_DIR / "ani_to_index.pkl")
+index_to_ani = joblib.load(MODEL_DIR / "index_to_ani.pkl")
+ind = joblib.load(MODEL_DIR / "ind.pkl")
+top_sim = joblib.load(MODEL_DIR / "top_sim.pkl")
+content_anime_index = joblib.load(MODEL_DIR / "content_anime_index.pkl")
 
 def content_based_recc(anime_name,no_reccom=50):
     index=ind[anime_name]
