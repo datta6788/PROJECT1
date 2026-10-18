@@ -63,19 +63,38 @@ def fuzzy(input,anime_list):
         return None
     return match[0]
 
+
 def ani_data(ani_name):
-    url=(f"https://api.jikan.moe/v4/anime?q={ani_name}&limit=1")
-    response=requests.get(url)
-    data=response.json()
+    url = "https://api.jikan.moe/v4/anime"
+
     try:
-        anime=data["data"][0]
-        poster=anime["images"]["jpg"]["image_url"]
-        score=anime["score"]
-        episodes=anime["episodes"]
-        genre=", ".join(genre["name"] for genre in anime["genres"])
-        return{"poster":poster,"score":score,"episodes":episodes,"genre":genre}
-    except:
+        response = requests.get(
+            url,
+            params={"q": ani_name, "limit": 1},
+            timeout=(3, 5)
+        )
+        response.raise_for_status()
+
+        data = response.json()
+        anime = data["data"][0]
+
+        return {
+            "poster": anime["images"]["jpg"]["image_url"],
+            "score": anime["score"],
+            "episodes": anime["episodes"],
+            "genre": ", ".join(
+                genre["name"] for genre in anime["genres"]
+            )
+        }
+
+    except (
+        requests.exceptions.RequestException,
+        KeyError,
+        IndexError,
+        TypeError
+    ):
         return None
+
 def get_poster(anime_name):
     data=ani_data(anime_name)
     if data is not None:
