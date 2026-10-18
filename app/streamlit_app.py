@@ -63,10 +63,8 @@ def fuzzy(input,anime_list):
         return None
     return match[0]
 
-
 def ani_data(ani_name):
     url = "https://api.jikan.moe/v4/anime"
-
     try:
         response = requests.get(
             url,
@@ -74,10 +72,8 @@ def ani_data(ani_name):
             timeout=(3, 5)
         )
         response.raise_for_status()
-
         data = response.json()
         anime = data["data"][0]
-
         return {
             "poster": anime["images"]["jpg"]["image_url"],
             "score": anime["score"],
@@ -86,7 +82,6 @@ def ani_data(ani_name):
                 genre["name"] for genre in anime["genres"]
             )
         }
-
     except (
         requests.exceptions.RequestException,
         KeyError,
